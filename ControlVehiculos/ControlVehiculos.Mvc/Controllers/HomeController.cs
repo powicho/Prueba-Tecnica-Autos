@@ -12,9 +12,11 @@ public class HomeController : Controller
 
 
     // Inyectamos la fábrica de conexiones HTTP apuntando a la API REST [102]
-    public HomeController(IHttpClientFactory httpClientFactory)
+    public HomeController(IHttpClientFactory httpClientFactory, IWebHostEnvironment env) // El constructor DEBE recibir y asignar ambos parámetros [122]
     {
         _httpClient = httpClientFactory.CreateClient("VehiculosApi");
+        _env = env; // ¡SÚPER IMPORTANTE!: Aquí se guarda la herramienta para poder usarla en todo el archivo [122]
+
     }
 
     // 1. GET: Home/Index (Vista 2: El Catálogo / Dashboard principal con Filtros)
