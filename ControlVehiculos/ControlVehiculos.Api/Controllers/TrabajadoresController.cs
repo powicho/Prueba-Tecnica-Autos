@@ -85,6 +85,29 @@ public class TrabajadoresController : ControllerBase
 
         return Ok(result);
     }
+
+    // 3. POST: api/trabajadores (Registrar un nuevo trabajador en el sistema)
+    [HttpPost]
+    public async Task<IActionResult> Registrar([FromBody] Trabajador trabajador)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        // Validación de seguridad global: Evitar registrar dos veces el mismo correo
+        var existe = await _context.Trabajadores.AnyAsync(t => t.Correo == trabajador.Correo);
+        if (existe)
+        {
+            return BadRequest("El correo electrónico ya está registrado.");
+        }
+
+        _context.Trabajadores.Add(trabajador);
+        await _context.SaveChangesAsync();
+
+        return Ok(trabajador);
+    }
+
 }
 
 // =========================================================================

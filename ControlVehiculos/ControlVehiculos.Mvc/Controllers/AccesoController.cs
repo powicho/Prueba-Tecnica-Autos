@@ -79,4 +79,45 @@ public class AccesoController : Controller
         HttpContext.Session.Clear(); // Borra todas las variables de sesión en memoria
         return RedirectToAction("Login");
     }
+
+    // 4. GET: Acceso/Registro (Muestra la pantalla de registro de nuevo trabajador)
+    [HttpGet]
+    public IActionResult Registro()
+    {
+        return View();
+    }
+
+    // 5. POST: Acceso/Registro (Manda los datos de registro a la API REST)
+    [HttpPost]
+    public async Task<IActionResult> Registro(TrabajadorViewModel model, string contrasena)
+    {
+        if (!ModelState.IsValid || string.IsNullOrEmpty(contrasena))
+        {
+            ViewBag.Error = "Todos los campos son obligatorios.";
+            return View(model);
+        }
+
+        // Creamos un objeto anónimo temporal que incluya la contraseña para enviarlo a la API
+        var nuevoTrabajador = new
+        {
+            Nombre = model.Nombre,
+            Correo = model.Correo,
+            Contrasena = contrasena,
+            Pais = model.Pais
+        };
+
+        var stringContent = new StringContent(JsonSerializer.Serialize(nuevoTrabajador), Encoding.UTF8, "application/json");
+
+        // Consumimos el nuevo endpoint de registro de la API REST [101]
+        var response = await _httpClient.PostAsync("trabajadores", stringContent);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Login"); // Redirige al login tras registrarse con éxito
+        }
+
+        var errorMsg = await response.Content.ReadAsStringAsync();
+        ViewBag.Error = errorMsg.Contains("ya está registrado") ? "El correo electrónico ya está registrado." : "Error al registrarse en el servidor.";
+        return View(model);
+    }
 }

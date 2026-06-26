@@ -7,7 +7,7 @@ public class VehiculoViewModel
     public int Id { get; set; }
     public string Marca { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
-    public int ModeloAnio { get; set; }
+    public int ModeloAño { get; set; }
     public decimal PrecioCompra { get; set; }
     public decimal? PrecioReventa { get; set; }
     public DateTime FechaRecepcion { get; set; }

@@ -1,0 +1,54 @@
+﻿@model ControlVehiculos.Mvc.Models.TrabajadorViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Registro de Trabajador";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-5">
+                <h2 class="fw-bold text-primary mb-2 text-center">Registro de Trabajador</h2>
+                <p class="text-muted text-center mb-4">Crea una cuenta para ingresar al sistema de control.</p>
+                <hr />
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+                }
+
+                <form asp-action="Registro" method="post" class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-muted">Nombre Completo</label>
+                        <input asp-for="Nombre" type="text" class="form-control" placeholder="Ej: Luis Avila" required />
+                        <span asp-validation-for="Nombre" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Correo Electrónico</label>
+                        <input asp-for="Correo" type="email" class="form-control" placeholder="ejemplo@correo.com" required />
+                        <span asp-validation-for="Correo" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Contraseña</label>
+                        <input name="contrasena" type="password" class="form-control" placeholder="Mínimo 6 caracteres" required />
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-muted">País de Sede</label>
+                        <input asp-for="Pais" type="text" class="form-control" placeholder="Ej: Guatemala, El Salvador" required />
+                        <span asp-validation-for="Pais" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">Registrarme</button>
+                        <div class="text-center mt-3">
+                            <a asp-action="Login" class="text-decoration-none small">¿Ya tienes cuenta? Iniciar Sesión</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
