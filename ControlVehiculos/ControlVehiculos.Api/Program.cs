@@ -1,4 +1,21 @@
+// Importamos los namespaces necesarios
+using Microsoft.EntityFrameworkCore;
+using ControlVehiculos.Api.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// =========================================================================
+// REGISTRO DEL DBCONTEXT CON LA CADENA DE CONEXIÓN (Inyección de Dependencias)
+// =========================================================================
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+
+
+
+
+
 
 // Add services to the container.
 
