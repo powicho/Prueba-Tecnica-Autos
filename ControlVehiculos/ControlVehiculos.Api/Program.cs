@@ -1,6 +1,9 @@
 // Importamos los namespaces necesarios
 using Microsoft.EntityFrameworkCore;
 using ControlVehiculos.Api.Data;
+// Importamos el namespace de servicios
+using ControlVehiculos.Api.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
