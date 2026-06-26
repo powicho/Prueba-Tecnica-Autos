@@ -1,0 +1,39 @@
+﻿@model ControlVehiculos.Mvc.Models.LoginRequestModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-5">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-5">
+                <h2 class="text-center fw-bold mb-4 text-primary">Segundo Aire S.A.</h2>
+                <h5 class="text-center text-muted mb-4">Control de Vehículos</h5>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @ViewBag.Error
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <form asp-action="Login" method="post">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Correo" type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required>
+                        <label for="floatingInput">Correo electrónico</label>
+                        <span asp-validation-for="Correo" class="text-danger small"></span>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input asp-for="Contrasena" type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
+                        <label for="floatingPassword">Contraseña</label>
+                        <span asp-validation-for="Contrasena" class="text-danger small"></span>
+                    </div>
+
+                    <button class="w-100 btn btn-lg btn-primary rounded-pill shadow-sm" type="submit">Ingresar al Sistema</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
