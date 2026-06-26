@@ -22,7 +22,7 @@
                     <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
                 }
 
-                <form asp-action="Registrar" method="post" class="row g-3">
+                 <form asp-action="Registrar" method="post" enctype="multipart/form-data" class="row g-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold small text-muted">Marca del Vehículo</label>
                         <input asp-for="Marca" type="text" class="form-control" placeholder="Ej: Subaru, Toyota" required />
@@ -60,9 +60,8 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-muted">Ruta o URL de la Imagen</label>
-                        <input asp-for="ImagenUrl" type="text" class="form-control" placeholder="Ej: images/subaru_azul.jpg" />
-                        <span asp-validation-for="ImagenUrl" class="text-danger small"></span>
+                        <label class="form-label fw-bold small text-muted">Subir Fotografía del Vehículo</label>
+                        <input type="file" name="archivoImagen" class="form-control" accept="image/*" required />
                     </div>
 
                     <div class="col-12">

@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // REGISTRO DEL SERVICIO VALUADOR
 // =========================================================================
 builder.Services.AddSingleton<IValuadorService, ValuadorService>();
-
+builder.Services.AddSingleton<IEstadoCacheService, EstadoCacheService>();
 
 
 
@@ -31,6 +31,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
