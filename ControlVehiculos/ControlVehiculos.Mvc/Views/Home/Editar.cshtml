@@ -1,0 +1,75 @@
+﻿@model ControlVehiculos.Mvc.Models.VehiculoViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Editar Vehículo";
+}
+
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-5">
+                <h2 class="fw-bold text-primary mb-2 text-center">Editar Información del Vehículo</h2>
+                <p class="text-muted text-center mb-4">Modifique el estado, descripción o fotografía. El precio sugerido se recalculará automáticamente.</p>
+                <hr />
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+                }
+
+                <form asp-action="Editar" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="row g-3">
+                    <!-- Enviamos campos ocultos (Hidden) que no queremos que el usuario modifique pero la API sí necesita -->
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Marca" />
+                    <input type="hidden" asp-for="Color" />
+                    <input type="hidden" asp-for="ModeloAño" />
+                    <input type="hidden" asp-for="PrecioCompra" />
+                    <input type="hidden" asp-for="FechaRecepcion" />
+                    <input type="hidden" asp-for="Vendido" />
+                    <input type="hidden" asp-for="TrabajadorId" />
+                    <input type="hidden" asp-for="ImagenUrl" />
+
+                    <!-- Mostramos la información de solo lectura para guiar al trabajador -->
+                    <div class="col-12 bg-light p-3 rounded-3 mb-3 text-center">
+                        <h5 class="fw-bold text-dark mb-1">Vehículo: @Model.Marca (@Model.ModeloAño)</h5>
+                        <p class="text-muted small mb-0">Color: @Model.Color | Precio de Compra: @Model.PrecioCompra.ToString("C")</p>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold small text-muted">Nueva Condición Física de Ingreso</label>
+                        <select asp-for="EstadoId" class="form-select" required>
+                            @foreach (var estado in ViewBag.Estados as List<EstadoVehiculoViewModel>)
+                            {
+                                if (Model.EstadoId == estado.Id)
+                                {
+                                    <option value="@estado.Id" selected>@estado.Nombre</option>
+                                }
+                                else
+                                {
+                                    <option value="@estado.Id">@estado.Nombre</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="EstadoId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold small text-muted">Reemplazar Fotografía (Opcional)</label>
+                        <input type="file" name="archivoImagen" class="form-control" accept="image/*" />
+                        <span class="text-muted small">Deje este campo vacío si no desea cambiar la foto actual.</span>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-muted">Actualizar Descripción</label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="4" required placeholder="Escriba los detalles observados..."></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

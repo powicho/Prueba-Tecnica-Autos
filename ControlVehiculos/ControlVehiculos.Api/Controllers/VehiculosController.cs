@@ -90,6 +90,53 @@ public class VehiculosController : ControllerBase
 
         return CreatedAtAction(nameof(GetVehiculos), new { id = vehiculo.Id }, vehiculo);
     }
+
+    // 3. PUT: api/vehiculos/{id} (Actualizar un vehículo y recalcular precio de reventa) [1.1]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> ActualizarVehiculo(int id, [FromBody] Vehiculo vehiculoModificado)
+    {
+        if (id != vehiculoModificado.Id)
+        {
+            return BadRequest("El ID del vehículo no coincide.");
+        }
+
+        var vehiculoExistente = await _context.Vehiculos.FindAsync(id);
+        if (vehiculoExistente == null)
+        {
+            return NotFound("Vehículo no encontrado.");
+        }
+
+        // Actualizamos únicamente los campos permitidos por tu regla de negocio:
+        vehiculoExistente.EstadoId = vehiculoModificado.EstadoId;
+        vehiculoExistente.Descripcion = vehiculoModificado.Descripcion;
+
+        // Si el usuario subió una nueva imagen, actualizamos la ruta
+        if (!string.IsNullOrEmpty(vehiculoModificado.ImagenUrl))
+        {
+            vehiculoExistente.ImagenUrl = vehiculoModificado.ImagenUrl;
+        }
+
+        // AUTOMATIZACIÓN: Volvemos a ejecutar el Valuador para calcular el nuevo precio de reventa
+        vehiculoExistente.PrecioReventa = _valuador.CalcularPrecioReventaSugerido(vehiculoExistente.PrecioCompra, vehiculoExistente.EstadoId);
+
+        await _context.SaveChangesAsync();
+        return Ok(vehiculoExistente);
+    }
+
+    // 4. DELETE: api/vehiculos/{id} (Eliminar físicamente un vehículo) [1.1]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> EliminarVehiculo(int id)
+    {
+        var vehiculo = await _context.Vehiculos.FindAsync(id);
+        if (vehiculo == null)
+        {
+            return NotFound("Vehículo no encontrado.");
+        }
+
+        _context.Vehiculos.Remove(vehiculo);
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 }
 
 // =========================================================================
@@ -109,4 +156,7 @@ public class VehiculoDto
     public string ImagenUrl { get; set; }
     public string EstadoFisico { get; set; } = string.Empty;
     public string RegistradoPor { get; set; } = string.Empty;
+
+
 }
+
