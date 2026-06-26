@@ -1,4 +1,16 @@
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+// =========================================================================
+// REGISTRO DEL CLIENTE HTTP PARA CONSUMIR LA API REST
+// =========================================================================
+var apiBaseUrl = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl");
+
+builder.Services.AddHttpClient("VehiculosApi", client =>
+{
+    client.BaseAddress = new Uri(apiBaseUrl);
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
