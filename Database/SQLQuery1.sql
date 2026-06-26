@@ -99,13 +99,16 @@ GO
 -- =========================================================================
 
 -- SP 1: Filtrado, búsqueda y consulta de vehículos
+USE ControlVehiculos;
+GO
+
 ALTER PROCEDURE sp_ConsultarVehiculos
-    @EstadoId INT = NULL,
-    @Vendido BIT = NULL,
-    @TrabajadorId INT = NULL,
-    @Marca VARCHAR(100) = NULL,       -- NUEVO: Parámetro para buscar marca exacta
-    @ModeloAño INT = NULL,           -- NUEVO: Parámetro para buscar año exacto
-    @TextoBuscar VARCHAR(100) = NULL
+    @EstadoId INT = NULL,               -- 1er parámetro (Index 0 en C#)
+    @Vendido BIT = NULL,                -- 2do parámetro (Index 1 en C#)
+    @TextoBuscar VARCHAR(100) = NULL,   -- 3er parámetro (Index 2 en C#) - ¡DEBE IR AQUÍ!
+    @TrabajadorId INT = NULL,           -- 4to parámetro (Index 3 en C#) - ¡DEBE IR AQUÍ!
+    @Marca VARCHAR(100) = NULL,         -- Opcional (Se enviará como NULL por defecto)
+    @ModeloAño INT = NULL              -- Opcional (Se enviará como NULL por defecto)
 AS
 BEGIN
     SET NOCOUNT ON; 
@@ -130,15 +133,14 @@ BEGIN
         (@EstadoId IS NULL OR v.EstadoId = @EstadoId)
         AND (@Vendido IS NULL OR v.Vendido = @Vendido)
         AND (@TrabajadorId IS NULL OR v.TrabajadorId = @TrabajadorId)
-        AND (@Marca IS NULL OR v.Marca = @Marca) -- Filtro opcional por marca exacta
-        AND (@ModeloAño IS NULL OR v.ModeloAño = @ModeloAño) -- Filtro opcional por año exacto
+        AND (@Marca IS NULL OR v.Marca = @Marca)
+        AND (@ModeloAño IS NULL OR v.ModeloAño = @ModeloAño)
         AND (@TextoBuscar IS NULL 
              OR v.Marca LIKE '%' + @TextoBuscar + '%' 
              OR v.Color LIKE '%' + @TextoBuscar + '%')
     ORDER BY v.FechaRecepcion DESC;
 END;
 GO
-
 
 -- SP 2: Estadísticas de desempeño para la vista de perfil del trabajador
 ALTER PROCEDURE sp_ObtenerEstadisticasTrabajador
@@ -200,7 +202,7 @@ EXEC sp_ConsultarVehiculos;
 EXEC sp_ConsultarVehiculos @Vendido = 0;
 EXEC sp_ConsultarVehiculos @TextoBuscar = 'Azul';
 EXEC sp_ConsultarVehiculos @Marca = 'Toyota', @Vendido = 1;
-EXEC sp_ConsultarVehiculos @TrabajadorId = 1, @ModeloAño = 2013;
+
 
 
 select * from dbo.EstadosVehiculo;
