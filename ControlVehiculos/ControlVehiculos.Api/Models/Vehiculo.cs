@@ -43,11 +43,11 @@ namespace ControlVehiculos.Api.Models
         public int EstadoId { get; set; }
         
         [ForeignKey("EstadoId")] // Indica la regla de integridad de llave foránea
-        public virtual EstadosVehiculo Estado { get; set; }
+        public virtual EstadosVehiculo? Estado { get; set; } // ¡Corregido con '?'! [103]
 
         public int TrabajadorId { get; set; }
-        
+
         [ForeignKey("TrabajadorId")]
-        public virtual Trabajador Trabajador { get; set; }
+        public virtual Trabajador? Trabajador { get; set; }   // ¡Corregido con '?'! [103]
     }
 }
