@@ -80,34 +80,8 @@ public class PerfilController : Controller
         var trabajadorId = HttpContext.Session.GetInt32("TrabajadorId");
         if (trabajadorId == null) return RedirectToAction("Login", "Acceso");
 
-        // 1. Si el usuario seleccionó un archivo binario válido
-        if (archivoImagen != null && archivoImagen.Length > 0)
-        {
-            // Generamos un nombre único criptográfico (GUID) para evitar que imágenes con el mismo nombre se sobreescriban
-            string nombreUnico = Guid.NewGuid().ToString() + Path.GetExtension(archivoImagen.FileName);
-
-            // Obtenemos de forma nativa la ruta absoluta de tu carpeta wwwroot/images en el servidor [117]
-            string carpetaImages = Path.Combine(_env.WebRootPath, "images");
-
-            // Aseguramos que la carpeta exista físicamente en tu disco duro
-            if (!Directory.Exists(carpetaImages))
-            {
-                Directory.CreateDirectory(carpetaImages);
-            }
-
-            string rutaFisicaCompleta = Path.Combine(carpetaImages, nombreUnico);
-
-            // Guardamos el archivo binario físicamente en el disco duro de tu computadora [117]
-            using (var stream = new FileStream(rutaFisicaCompleta, FileMode.Create))
-            {
-                await archivoImagen.CopyToAsync(stream);
-            }
-
-            // Guardamos la ruta relativa amigable que se enviará en el JSON a la API REST
-            model.ImagenUrl = "images/" + nombreUnico;
-        }
-
-        if (!ModelState.IsValid)
+        // Método auxiliar local para recargar los estados de forma segura si algo falla
+        async Task RecargarEstados()
         {
             var responseEstados = await _httpClient.GetAsync("estados");
             var listaEstados = new List<EstadoVehiculoViewModel>();
@@ -117,6 +91,27 @@ public class PerfilController : Controller
                 listaEstados = JsonSerializer.Deserialize<List<EstadoVehiculoViewModel>>(jsonEstados, new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<EstadoVehiculoViewModel>();
             }
             ViewBag.Estados = listaEstados;
+        }
+
+        if (archivoImagen != null && archivoImagen.Length > 0)
+        {
+            string nombreUnico = Guid.NewGuid().ToString() + Path.GetExtension(archivoImagen.FileName);
+            string carpetaImages = Path.Combine(_env.WebRootPath, "images");
+            if (!Directory.Exists(carpetaImages))
+            {
+                Directory.CreateDirectory(carpetaImages);
+            }
+            string rutaFisicaCompleta = Path.Combine(carpetaImages, nombreUnico);
+            using (var stream = new FileStream(rutaFisicaCompleta, FileMode.Create))
+            {
+                await archivoImagen.CopyToAsync(stream);
+            }
+            model.ImagenUrl = "images/" + nombreUnico;
+        }
+
+        if (!ModelState.IsValid)
+        {
+            await RecargarEstados(); // ¡Carga defensiva!
             return View(model);
         }
 
@@ -130,6 +125,8 @@ public class PerfilController : Controller
             return RedirectToAction("Index");
         }
 
+        // ¡AQUÍ ESTABA EL DETALLE!: Si la API falla, recargamos los estados antes de retornar la vista
+        await RecargarEstados(); // ¡Carga defensiva!
         ViewBag.Error = "Ocurrió un error al registrar el vehículo en el servidor.";
         return View(model);
     }

@@ -31,10 +31,10 @@ namespace ControlVehiculos.Api.Models
 
         public bool Vendido { get; set; } = false; // El tipo 'bool' de C# se mapea automáticamente a 'BIT' en SQL Server
 
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; } // ¡Corregido con '?'! [103]
 
         [StringLength(500)]
-        public string ImagenUrl { get; set; }
+        public string? ImagenUrl { get; set; }   // ¡Corregido con '?'! [103]
 
         // =========================================================================
         //  -- RELACIONES (CLAVES FORÁNEAS)
