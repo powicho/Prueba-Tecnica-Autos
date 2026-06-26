@@ -1,0 +1,81 @@
+﻿@model ControlVehiculos.Mvc.Models.VehiculoViewModel
+@{
+    ViewData["Title"] = "Registrar Vehículo";
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+        <i class="bi bi-arrow-left"></i> Volver a Mi Perfil
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-5">
+                <h2 class="fw-bold text-primary mb-2 text-center">Registrar Ingreso de Vehículo</h2>
+                <p class="text-muted text-center mb-4">Complete la información técnica. El precio de reventa se calculará automáticamente.</p>
+                <hr />
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+                }
+
+                <form asp-action="Registrar" method="post" class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Marca del Vehículo</label>
+                        <input asp-for="Marca" type="text" class="form-control" placeholder="Ej: Subaru, Toyota" required />
+                        <span asp-validation-for="Marca" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Color</label>
+                        <input asp-for="Color" type="text" class="form-control" placeholder="Ej: Azul, Negro" required />
+                        <span asp-validation-for="Color" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Modelo (Año de fabricación)</label>
+                        <input asp-for="ModeloAnio" type="number" min="1900" max="2030" class="form-control" placeholder="Ej: 2013" required />
+                        <span asp-validation-for="ModeloAnio" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Precio de Compra</label>
+                        <input asp-for="PrecioCompra" type="number" step="0.01" min="0" class="form-control" placeholder="0.00" required />
+                        <span asp-validation-for="PrecioCompra" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Condición Física de Ingreso</label>
+                        <select asp-for="EstadoId" class="form-select" required>
+                            <option value="">-- Seleccionar Estado --</option>
+                            @foreach (var estado in ViewBag.Estados as List<EstadoVehiculoViewModel>)
+                            {
+                                <option value="@estado.Id">@estado.Nombre</option>
+                            }
+                        </select>
+                        <span asp-validation-for="EstadoId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-muted">Ruta o URL de la Imagen</label>
+                        <input asp-for="ImagenUrl" type="text" class="form-control" placeholder="Ej: images/subaru_azul.jpg" />
+                        <span asp-validation-for="ImagenUrl" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-muted">Descripción y Detalles Adicionales</label>
+                        <textarea asp-for="Descripcion" class="form-control" rows="4" placeholder="Escriba los detalles mecánicos o estéticos observados en la recepción..."></textarea>
+                        <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">Registrar Vehículo</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

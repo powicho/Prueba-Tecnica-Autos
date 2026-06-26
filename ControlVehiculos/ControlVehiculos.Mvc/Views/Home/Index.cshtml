@@ -1,8 +1,123 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<ControlVehiculos.Mvc.Models.VehiculoViewModel>
+@{
+    ViewData["Title"] = "Catálogo de Vehículos";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="fw-bold text-primary">Catálogo General</h1>
+        <p class="text-muted">Bienvenido de nuevo, <strong>@ViewBag.TrabajadorNombre</strong></p>
+    </div>
+    <a asp-controller="Perfil" asp-action="Registrar" class="btn btn-primary rounded-pill shadow-sm">
+        <i class="bi bi-plus-circle"></i> Registrar Vehículo Nuevo
+    </a>
+</div>
+
+<!-- PANEL DE FILTROS (Formulario con método GET para enviar los parámetros a la URL) -->
+<div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body">
+        <form method="get" asp-action="Index" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted">Buscar por Marca/Color</label>
+                <input type="text" name="buscar" value="@ViewBag.FiltroBuscar" class="form-control" placeholder="Ej: Subaru, Azul...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted">Condición Física</label>
+                <select name="estadoId" class="form-select">
+                    <option value="">-- Todos los Estados --</option>
+                    @foreach (var estado in ViewBag.Estados as List<EstadoVehiculoViewModel>)
+                    {
+                        if (ViewBag.FiltroEstadoId == estado.Id)
+                        {
+                            <option value="@estado.Id" selected>@estado.Nombre</option>
+                        }
+                        else
+                        {
+                            <option value="@estado.Id">@estado.Nombre</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold text-muted">Disponibilidad</label>
+                <select name="vendido" class="form-select">
+                    <option value="">-- Todos --</option>
+                    @if (ViewBag.FiltroVendido == false)
+                    {
+                        <option value="false" selected>En Venta</option>
+                        <option value="true">Vendido</option>
+                    }
+                    else if (ViewBag.FiltroVendido == true)
+                    {
+                        <option value="false">En Venta</option>
+                        <option value="true" selected>Vendido</option>
+                    }
+                    else
+                    {
+                        <option value="false">En Venta</option>
+                        <option value="true">Vendido</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-secondary w-100 rounded-pill">Filtrar Catálogo</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- TABLA DE VEHÍCULOS -->
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Marca</th>
+                    <th>Color</th>
+                    <th>Modelo (Año)</th>
+                    <th>Precio Sugerido</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Estado Comercial</th>
+                    <th>Condición Física</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">No se encontraron vehículos que coincidan con la búsqueda.</td>
+                    </tr>
+                }
+                @foreach (var auto in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@auto.Marca</td>
+                        <td>@auto.Color</td>
+                        <td>@auto.ModeloAnio</td>
+                        <td class="text-success fw-bold">
+                            @(auto.PrecioReventa.HasValue ? auto.PrecioReventa.Value.ToString("C") : "Pendiente")
+                        </td>
+                        <td>@auto.FechaRecepcion.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (auto.Vendido)
+                            {
+                                <span class="badge bg-danger rounded-pill">Vendido</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success rounded-pill">En Venta</span>
+                            }
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">@auto.EstadoFisico</span>
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Detalle" asp-route-id="@auto.Id" class="btn btn-sm btn-outline-primary rounded-pill">Ver Ficha</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

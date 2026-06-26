@@ -1,0 +1,77 @@
+﻿@model ControlVehiculos.Mvc.Models.VehiculoViewModel
+@{
+    ViewData["Title"] = "Ficha Técnica";
+}
+
+<div class="mb-4">
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">
+        <i class="bi bi-arrow-left"></i> Volver al Catálogo
+    </a>
+</div>
+
+<div class="card shadow border-0 rounded-3 overflow-hidden">
+    <div class="row g-0">
+        <!-- Columna Izquierda: Imagen y Estado -->
+        <div class="col-md-6 bg-dark d-flex flex-column align-items-center justify-content-center p-5" style="min-height: 400px;">
+            @if (!string.IsNullOrEmpty(Model.ImagenUrl))
+            {
+                    <img src="~/@Model.ImagenUrl" class="img-fluid rounded-3 shadow" alt="@Model.Marca" onerror="this.src='/images/no-image.jpg';" style="max-height: 300px; object-fit: cover;">
+            }
+            else
+            {
+                    <div class="text-center text-muted">
+                        <i class="bi bi-image" style="font-size: 5rem;"></i>
+                        <p>Imagen no disponible</p>
+                    </div>
+            }
+            <div class="mt-4 text-center">
+                <span class="badge bg-secondary fs-6 px-3 py-2">Condición Física: @Model.EstadoFisico</span>
+            </div>
+        </div>
+
+        <!-- Columna Derecha: Especificaciones y Descripción -->
+        <div class="col-md-6">
+            <div class="card-body p-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="fw-bold text-primary mb-0">@Model.Marca</h1>
+                    @if (Model.Vendido)
+                    {
+                            <span class="badge bg-danger fs-6 px-3 py-2 rounded-pill">Vendido</span>
+                    }
+                    else
+                    {
+                            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill">En Venta</span>
+                    }
+                </div>
+
+                <h4 class="text-muted mb-4">Modelo @Model.ModeloAnio - Color @Model.Color</h4>
+                <hr />
+
+                <h5 class="fw-bold mb-3 text-muted">Descripción del Vehículo:</h5>
+                <p class="fs-5 text-dark lh-base mb-4 bg-light p-3 rounded-3 border-start border-primary border-4">
+                    @(string.IsNullOrEmpty(Model.Descripcion) ? "No se ha agregado una descripción para este vehículo." : Model.Descripcion)
+                </p>
+
+                <div class="bg-light p-4 rounded-3 mb-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <span class="text-muted small d-block">Ingresado al sistema:</span>
+                            <strong class="fs-6">@Model.FechaRecepcion.ToString("dd/MM/yyyy")</strong>
+                        </div>
+                        <div class="col-6 text-end">
+                            <span class="text-muted small d-block">Registrado por:</span>
+                            <strong class="fs-6">@Model.RegistradoPor</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-info border-0 shadow-sm d-flex align-items-center" role="alert">
+                    <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                    <div>
+                        El precio de reventa sugerido es de <strong class="fs-5">@Model.PrecioReventa?.ToString("C")</strong>.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
