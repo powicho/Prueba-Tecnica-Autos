@@ -19,7 +19,7 @@ namespace ControlVehiculos.Api.Models
         public string Color { get; set; } = string.Empty;
 
         [Required]
-        public int ModeloAnio { get; set; }
+        public int ModeloAño{ get; set; }
 
         [Required]
         [Column(TypeName = "decimal(18,2)")] // Mapea al tipo de datos exacto de SQL Server
